@@ -50,6 +50,7 @@ public class SevenExEg : MonoBehaviour
 
     void Update()
     {
+        // TODO: передалть в Action
         if (deck.well.Count==0)
         {
             if (SelectCard.rank == 7 || SelectCard.name == VoidName)
@@ -71,6 +72,7 @@ public class SevenExEg : MonoBehaviour
         if (card.state == eCardState.onplace || card.state == eCardState.select)
             return;
 
+        // TODO: По возможности переделать в switch
         if (phase == ePhase.idle)
         {
             if (VoidName == "")
@@ -79,7 +81,7 @@ public class SevenExEg : MonoBehaviour
                 float Vy = card.transform.localPosition.y;
                 VoidName = FindSuit(Vy)+FindRank(Vx);
                 VoidPlace = new Vector2(Vx, Vy);
-                print(VoidName);
+                print("выбрана "+VoidName+" позиция");
             }
 
             card.transform.localPosition = SelectPlace;   
@@ -107,43 +109,44 @@ public class SevenExEg : MonoBehaviour
                 return;
             }
 
-            if (CheckPlace(card) == true)
+            if (CheckPlace(card))
             {
                 ChangeCards(card);
                 score++;
+                print("Позиции совпадают");
+            }
+            else
+            {
+                print("Позиции разные");
             }
         }
     }
 
     public bool CheckPlace(Card card)
     {
-        
+        // TODO: По возможности переделать в switch
         // Если метоположение совпадает тогда меняем, иначе нифига
         if (SelectCard.suit == "C" && card.transform.localPosition.y == 0)
         {
-            print("C");
-            Checkrank(card.transform.localPosition.x);
-            return true;
+            print("Проверяем Трефы");
+            return Checkrank(card.transform.localPosition.x);
         }
         if (SelectCard.suit == "D" && card.transform.localPosition.y == 3)
         {
-            print("D");
-            Checkrank(card.transform.localPosition.x);
-            return true;
+            print("Проверяем Бубны");
+            return Checkrank(card.transform.localPosition.x);
         }
         if (SelectCard.suit == "H" && card.transform.localPosition.y == 6)
         {
-            print("H");
-            Checkrank(card.transform.localPosition.x);
-            return true;
+            print("Проверяем Черви");
+            return Checkrank(card.transform.localPosition.x);
         }
         if (SelectCard.suit == "S" && card.transform.localPosition.y == 9)
         {
-            print("S");
-            Checkrank(card.transform.localPosition.x);
-            return true;
+            print("Проверяем Пики");
+            return Checkrank(card.transform.localPosition.x);
         }
-        //print(card.suit);
+
         return false;
 
     }
@@ -153,7 +156,7 @@ public class SevenExEg : MonoBehaviour
         float need_x = (14 - SelectCard.rank) * 2;
         //print(card_x);
         if (card_x == need_x)
-        { print("true"); return true; }
+            return true; 
         return false;
     }
 
@@ -165,6 +168,7 @@ public class SevenExEg : MonoBehaviour
 
     private string FindSuit(float card_y)
     {
+        // TODO: По возможности переделать в switch
         if (card_y == 0)
             return "C";
         if (card_y == 3)
@@ -193,22 +197,43 @@ public class SevenExEg : MonoBehaviour
         {
             float v_y= -1;
             float v_x = v_x = 14;
-            if (SelectCard.suit == "C")
-            { v_y = 0; }
-            if (SelectCard.suit == "D")
-            { v_y = 3; }
-            if (SelectCard.suit == "H")
-            { v_y = 6; }
-            if (SelectCard.suit == "S")
-            { v_y = 9; }
+            switch (SelectCard.suit)
+            {
+                case "C":
+                    {
+                        v_y = 0;
+                        break;
+                    }
+
+                case "D":
+                    { 
+                        v_y = 3;
+                        break; 
+                    }
+                case "H":
+                    {
+                        v_y = 6;
+                        break;
+                    }
+                case "S":
+                    {
+                        v_y = 9;
+                        break;
+                    }
+                default:
+                    {
+                        Debug.LogError("Не верная масть");
+                        break;
+                    }
+            }
             SelectCard.transform.localPosition = new Vector2(v_x, v_y);
+            print("колодец " + CardName);
         }
         else
         {
             SelectCard.transform.localPosition = VoidPlace;
+            print("Изначальное место");
         }
         SelectCard.state = eCardState.onplace;
-
-        
     }
 }
